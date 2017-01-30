@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +32,36 @@ import com.google.common.collect.ImmutableMap;
 @AutoConfigureMockMvc
 public class MouseApplicationRestTest {
 
+    private final static UUID mickeyUUID = new UUID(0L, 0L);
+    private final static UUID bernHardUUID = new UUID(1L, 1L);
+
     @Autowired
     private MockMvc mvc;
 
+    private String getMickeyUUID() {
+        return mickeyUUID.toString();
+    }
+
+    private String getBernhardUUID() {
+        return bernHardUUID.toString();
+    }
+
     @Test
     public void should_put_resource_and_get_it_via_location() throws Exception {
-        mvc.perform(put("/mice/mickey").content(
+        mvc.perform(put("/mice/" + getMickeyUUID() + "/").content(
                 new ObjectMapper().writeValueAsString(ImmutableMap.of(
-                        "name", "mickey"
+                        "name", getMickeyUUID()
                         ))
         ))
         // .andDo(print())
         .andExpect(status().isCreated())
-        .andExpect(header().string("Location", endsWith("/mice/mickey")))
+        .andExpect(header().string("Location", endsWith("/mice/" + getMickeyUUID())))
         .andDo((putMouse) -> {
             // follow the location header.
             mvc.perform(get(putMouse.getResponse().getHeader("Location")))
-            // .andDo(print())
+             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("name", is("mickey")))
+            .andExpect(jsonPath("name", is(getMickeyUUID())))
             .andExpect(jsonPath("_id", notNullValue()));
         })
         .andDo((putMouse) -> {
@@ -60,20 +73,20 @@ public class MouseApplicationRestTest {
 
     @Test
     public void should_update_age() throws Exception {
-        mvc.perform(put("/mice/bernhard").content(
+        mvc.perform(put("/mice/" + getBernhardUUID()).content(
                 new ObjectMapper().writeValueAsString(ImmutableMap.of(
-                        "name", "bernhard",
+                        "name", getBernhardUUID(),
                         "age", 10
                         ))
         ))
         // .andDo(print())
         .andExpect(status().isCreated())
-        .andExpect(header().string("Location", endsWith("/mice/bernhard")))
+        .andExpect(header().string("Location", endsWith("/mice/" + getBernhardUUID())))
         .andDo((putMouse) -> {
             String jsonResponse = putMouse.getResponse().getContentAsString();
             String oldId = new ObjectMapper().readTree(jsonResponse).get("_id").asText();
-            mvc.perform(put("/mice/bernhard").content(new ObjectMapper().writeValueAsString(ImmutableMap.of(
-                    "name", "bernhard",
+            mvc.perform(put("/mice/" + getBernhardUUID()).content(new ObjectMapper().writeValueAsString(ImmutableMap.of(
+                    "name", getBernhardUUID(),
                     "age", 12
                     ))))
             // .andDo(print())

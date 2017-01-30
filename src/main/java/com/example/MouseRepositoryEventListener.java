@@ -30,6 +30,8 @@ public class MouseRepositoryEventListener extends AbstractRepositoryEventListene
 
     @Override
     protected void onBeforeDelete(Mouse entity) {
+        //TODO prevent deletion of the latest Mouse, but delete only the LatestMouseEntity to let the historical data survive
+
         repo.deleteByMouse(entity);
     }
 

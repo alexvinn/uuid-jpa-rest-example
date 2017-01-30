@@ -2,6 +2,8 @@ package com.example;
 
 import static javax.persistence.AccessType.FIELD;
 
+import java.util.UUID;
+
 import javax.persistence.Access;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,8 +28,8 @@ public class LatestMouse {
 
     @Id
     @Getter
-    @Column(name = "NAME", nullable = false, insertable = true, updatable = false)
-    private String name;
+    @Column(columnDefinition="BINARY(16) NOT NULL", nullable = false, insertable = true, updatable = false)
+    private UUID name;
 
     @OneToOne(optional=false)
     @Getter

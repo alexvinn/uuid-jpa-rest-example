@@ -1,6 +1,9 @@
 package com.example;
 
+import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PRIVATE;
+
+import java.util.UUID;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -25,10 +28,10 @@ public class Mouse extends ImmutableEntity {
 
     private static final long serialVersionUID = 9132197821372047114L;
 
-    // stable identifier.
+    @Column(columnDefinition="BINARY(16) NOT NULL", nullable = false, insertable = true, updatable = false)
     @Getter
-    @Column(name = "NAME", nullable = false, insertable = true, updatable = false)
-    private String name;
+    @Setter(PACKAGE)
+    protected UUID name;
 
     @Getter
     @Setter

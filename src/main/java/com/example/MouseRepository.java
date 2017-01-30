@@ -11,10 +11,10 @@ import org.springframework.data.jpa.repository.Query;
 public interface MouseRepository extends JpaRepository<Mouse, UUID> {
 
     @Query("SELECT m FROM Mouse m JOIN LatestMouse lm ON m.id=lm.mouse.id WHERE lm.name=:name")
-    Optional<Mouse> findLatestMouseByName(String name);
+    Optional<Mouse> findLatestMouseByName(UUID name);
 
     @Query("SELECT m FROM Mouse m LEFT JOIN LatestMouse lm ON m.id=lm.mouse.id WHERE m.name=:name AND lm.mouse.id IS NULL")
-    Page<Mouse> findOldMiceByName(String name, Pageable pageable);
+    Page<Mouse> findOldMiceByName(UUID name, Pageable pageable);
 
     Optional<Mouse> findOneById(UUID id);
 
